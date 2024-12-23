@@ -1,43 +1,53 @@
-// Task 1
 #include <iostream>
 #include <cmath>
-#include <C:\Users\Admin\VSCODE\pz\pz\string.h>
+#include <cstdio>
+#include <c:/Users/Admin/VSCODE/pz/pz/string.h>
 
-class Square {
+//Task 1
+class Shape {
 protected:
     double side_length;
 
 public:
-    Square(double side) : side_length(side) {}
+    Shape(double side) : side_length(side) {}
 
-    double area() const {
+    virtual double area() const = 0;
+    virtual double perimeter() const = 0;
+};
+
+class Square : virtual public Shape {
+public:
+    Square(double side) : Shape(side) {}
+
+    double area() const override {
         return side_length * side_length;
     }
 
-    double perimeter() const {
+    double perimeter() const override {
         return 4 * side_length;
     }
 };
 
-class Circle {
+class Circle : virtual public Shape {
 protected:
     double radius;
 
 public:
-    Circle(double r) : radius(r) {}
+    Circle(double r) : Shape(r * 2), radius(r) {}
 
-    double area() const {
+    double area() const override {
         return 3.14 * radius * radius;
     }
 
-    double circumference() const {
+    double perimeter() const override {
         return 2 * 3.14 * radius;
     }
 };
 
 class InscribedCircle : public Square, public Circle {
 public:
-    InscribedCircle(double side) : Square(side), Circle(side / 2) {}
+    InscribedCircle(double side)
+        : Shape(side), Square(side), Circle(side / 2) {}
 
     void description() const {
         std::cout << "A circle inscribed in a square with side length " << side_length
@@ -45,82 +55,86 @@ public:
     }
 };
 
-// Task 2: Car
-class Wheels {
+//Task 2
+class Vehicle {
+protected:
+    std::string vehicle_type;
+
+public:
+    Vehicle() : vehicle_type("Vehicle") {}
+
+    virtual std::string description() const {
+        return "General Vehicle Description.";
+    }
+};
+
+class Wheels : virtual public Vehicle {
 protected:
     int number_of_wheels;
 
 public:
     Wheels(int wheels) : number_of_wheels(wheels) {}
 
-    String<> description() const {
-        String<> result(50);
-        result = "Number of wheels: ";
-        char buffer[10];
-        sprintf(buffer, "%d", number_of_wheels);
-        result += String<>(buffer);
-        result += ".";
-        return result;
+    std::string description() const override {
+        char buffer[50];
+        sprintf(buffer, "Number of wheels: %d.", number_of_wheels);
+        return std::string(buffer);
     }
 };
 
-class Engine {
+class Engine : virtual public Vehicle {
 protected:
     int horsepower;
 
 public:
     Engine(int hp) : horsepower(hp) {}
 
-    String<> description() const {
-        String<> result(50);
-        result = "Engine horsepower: ";
-        char buffer[10];
-        sprintf(buffer, "%d", horsepower);
-        result += String<>(buffer);
-        result += " hp.";
-        return result;
+    std::string description() const override {
+        char buffer[50];
+        sprintf(buffer, "Engine horsepower: %d hp.", horsepower);
+        return std::string(buffer);
     }
 };
 
-class Doors {
+class Doors : virtual public Vehicle {
 protected:
     int number_of_doors;
 
 public:
     Doors(int doors) : number_of_doors(doors) {}
 
-    String<> description() const {
-        String<> result(50);
-        result = "Number of doors: ";
-        char buffer[10];
-        sprintf(buffer, "%d", number_of_doors);
-        result += String<>(buffer);
-        result += ".";
-        return result;
+    std::string description() const override {
+        char buffer[50];
+        sprintf(buffer, "Number of doors: %d.", number_of_doors);
+        return std::string(buffer);
     }
 };
 
 class Car : public Wheels, public Engine, public Doors {
 public:
     Car(int wheels, int hp, int doors)
-        : Wheels(wheels), Engine(hp), Doors(doors) {}
+        : Vehicle(), Wheels(wheels), Engine(hp), Doors(doors) {
+        vehicle_type = "Car";
+    }
 
     void full_description() const {
-        std::cout << "Car:\n"
-            << Wheels::description() << "\n"
-            << Engine::description() << "\n"
-            << Doors::description() << "\n";
+        std::cout << "Car Description:\n";
+        std::cout << Wheels::description() << "\n";
+        std::cout << Engine::description() << "\n";
+        std::cout << Doors::description() << "\n";
     }
 };
 
 int main() {
-    // Task 1
+    //Task 1
+    std::cout << "Task 1: InscribedCircle\n";
     InscribedCircle shape(8);
     shape.description();
     std::cout << "Square area: " << shape.Square::area() << "\n";
-    std::cout << "Circle area: " << shape.Circle::area() << "\n";
+    std::cout << "Circle area: " << shape.Circle::area() << "\n\n";
 
-    // Task 2
+    //Task 2
+    std::cout << "Task 2: Car\n";
     Car car(4, 150, 4);
     car.full_description();
 
